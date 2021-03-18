@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+bin/
+include/
+lib/
+*.cfg
