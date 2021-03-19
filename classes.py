@@ -1,10 +1,11 @@
 import sys
+import time
 import pygame
 
 
 class Game:
     def __init__(self):
-        # Scales
+        # Display
         self.WIDTH = 720
         self.HEIGHT = 460
         self.display_surface = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -34,14 +35,42 @@ class Game:
         pygame.display.update()
         self.FPS_CLOCK.tick(self.FPS)
 
-    def event_loop(self):
-        pass
+    def event_loop(self, direction):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                    direction = "RIGHT"
+                elif event.key == pygame.K_LEFT or event.key == ord('a'):
+                    direction = "LEFT"
+                elif event.key == pygame.K_UP or event.key == ord('w'):
+                    direction = "UP"
+                elif event.key == pygame.K_DOWN or event.key == ord('s'):
+                    direction = "DOWN"
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+        return direction
 
     def show_score(self, pos=1):
-        pass
+        ss_font = pygame.font.SysFont("monaco", 24)
+        ss_surface = pygame.render(f"Score: {self.score}", True, self.BLACK)
+        ss_rect = ss_surface.get_rect()
+        if pos == 1:
+            ss_rect.midtop = (80, 10)
+        else:
+            ss_rect.midtop = (360, 120)
+        self.display_surface.blit(ss_surface, ss_rect)
 
     def game_over(self):
-        pass
+        go_font = pygame.font.SysFont("monaco", 72)
+        go_surface = pygame.render("Game over", True, self.red)
+        go_rect = go_surface.get_rect()
+        self.display_surface.blit(go_surface, go_rect)
+        self.show_score(0)
+        pygame.display.update()
+        time.sleep(3)
+        pygame.quit()
+        sys.exit()
 
 
 class Snake:
