@@ -54,7 +54,7 @@ class Game:
 
     def show_score(self, pos=1):
         ss_font = pygame.font.SysFont("monaco", 24)
-        ss_surface = ss_font.render(f"Score: {self.score}", True, self.BLACK)
+        ss_surface = ss_font.render(f"Score: {self.score}", True, self.WHITE)
         ss_rect = ss_surface.get_rect()
         if pos == 1:
             ss_rect.midtop = (80, 10)
@@ -118,11 +118,15 @@ class Snake:
                     pos[0], pos[1], 10, 10))
 
     def check_for_boundaries(self, game_over, screen_width, screen_height):
-        if any((self.snake_head_pos[0] > screen_width - 10
-                or self.snake_head_pos[0] < 0,
-                self.snake_head_pos[1] > screen_height - 10
-                or self.snake_head_pos[1] < 0)):
-            game_over()
+        if self.snake_head_pos[0] > screen_width - 10:
+            self.snake_head_pos[0] = 10
+        elif self.snake_head_pos[0] < 10:
+            self.snake_head_pos[0] = screen_width - 10
+        elif self.snake_head_pos[1] < 10:
+            self.snake_head_pos[1] = screen_height - 10
+        elif self.snake_head_pos[1] > screen_height - 10:
+            self.snake_head_pos[1] = 10
+
         for block in self.snake_body[1:]:
             if (block[0] == self.snake_head_pos[0] and
                     block[1] == self.snake_head_pos[1]):
