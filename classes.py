@@ -54,7 +54,7 @@ class Game:
 
     def show_score(self, pos=1):
         ss_font = pygame.font.SysFont("monaco", 24)
-        ss_surface = pygame.render(f"Score: {self.score}", True, self.BLACK)
+        ss_surface = ss_font.render(f"Score: {self.score}", True, self.BLACK)
         ss_rect = ss_surface.get_rect()
         if pos == 1:
             ss_rect.midtop = (80, 10)
@@ -64,7 +64,7 @@ class Game:
 
     def game_over(self):
         go_font = pygame.font.SysFont("monaco", 72)
-        go_surface = pygame.render("Game over", True, self.RED)
+        go_surface = go_font.render("Game over", True, self.RED)
         go_rect = go_surface.get_rect()
         self.display_surface.blit(go_surface, go_rect)
         self.show_score(0)

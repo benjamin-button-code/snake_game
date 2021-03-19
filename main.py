@@ -19,11 +19,11 @@ while True:
                                                            game.WIDTH, game.HEIGHT)
 
     # Drawing
-    snake.draw_snake(game.display_surface, game.GREEN)
+    snake.draw_snake(game.display_surface, game.BLACK)
     food.draw_food(game.display_surface)
 
     # Check for collisions
-    snake.check_for_boundaries(game.game_over(), game.WIDTH, game.HEIGHT)
+    snake.check_for_boundaries(game.game_over, game.WIDTH, game.HEIGHT)
 
     # Show and update screen
     game.show_score()
