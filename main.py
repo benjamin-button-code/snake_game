@@ -105,8 +105,20 @@ class Game:
         self.collision_with_food()
         self.collision_with_wall()
         self.collision_with_himself()
+    
+    def draw_grass(self):
+        grass_color = (167, 209, 61)
+
+        for row in range(CELL_NUMBER):
+            for col in range(CELL_NUMBER):
+                grass_rect = pygame.Rect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                if col % 2 == 0 and row % 2 == 0:
+                    pygame.draw.rect(SCREEN, grass_color, grass_rect)
+                elif col % 2 != 0 and row % 2 != 0:
+                    pygame.draw.rect(SCREEN, grass_color, grass_rect)
 
     def draw_elements(self):
+        self.draw_grass()
         self.food.draw()
         self.snake.draw()
         self.show_score()
