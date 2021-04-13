@@ -25,6 +25,7 @@ LEFT = Vector2(-1, 0)
 DOWN = Vector2(0, 1)
 UP = Vector2(0, -1)
 
+SPEEDUP = True
 GAME_FONT = pygame.font.Font("fonts/Neucha-Regular.ttf", 25)
 GAME_LOOP = True
 
@@ -48,6 +49,9 @@ class Snake:
 
 class Food:
     def __init__(self):
+        self.apple = pygame.image.load("Images/apple.png").convert_alpha()
+        self.apple = pygame.transform.scale(self.apple, (40, 40))
+
         self.x = random.randint(0, CELL_NUMBER - 1)
         self.y = random.randint(0, CELL_NUMBER - 1)
         self.pos = Vector2(self.x, self.y)
@@ -56,7 +60,9 @@ class Food:
         x_pos = int(self.pos.x * CELL_SIZE)
         y_pos = int(self.pos.y * CELL_SIZE)
         food_rect = pygame.Rect(x_pos, y_pos, CELL_SIZE - 5, CELL_SIZE - 5)
-        pygame.draw.rect(SCREEN, pygame.Color('red'), food_rect)
+
+        SCREEN.blit(self.apple, food_rect)
+        # pygame.draw.rect(SCREEN, pygame.Color('red'), food_rect)
     
     def update_position(self):
         self.x = random.randint(0, CELL_NUMBER - 1)
@@ -142,6 +148,13 @@ while GAME_LOOP:
             if event.key == pygame.K_ESCAPE:
                 GAME_LOOP = False
 
+
+    # Speedup
+    if game.score % 5 == 0 and game.score != 0 and SPEEDUP:
+        FPS += 1
+        SPEEDUP = False
+    elif game.score % 5 != 0:
+        SPEEDUP = True
 
     # Draw
     SCREEN.fill((175, 215, 70))
