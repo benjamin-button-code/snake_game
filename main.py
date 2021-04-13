@@ -69,6 +69,7 @@ class Food:
         self.y = random.randint(0, CELL_NUMBER - 1)
         self.pos = Vector2(self.x, self.y)
  
+
 class Game:
     def __init__(self):
         self.snake = Snake()
@@ -95,6 +96,10 @@ class Game:
             self.sneck = True
         else:
             self.sneck = False
+
+        for block in self.snake.body[1:]:
+            if block == self.food.pos:
+                self.food.update_position()
     
     def check_collision(self):
         self.collision_with_food()
