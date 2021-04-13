@@ -5,6 +5,7 @@ import pygame
 from pygame.math import Vector2
 
 
+pygame.font.init()
 pygame.init()
 
 # Settings / Constatns
@@ -24,6 +25,7 @@ LEFT = Vector2(-1, 0)
 DOWN = Vector2(0, 1)
 UP = Vector2(0, -1)
 
+GAME_FONT = pygame.font.Font("fonts/Neucha-Regular.ttf", 25)
 GAME_LOOP = True
 
 class Snake:
@@ -61,11 +63,12 @@ class Food:
         self.y = random.randint(0, CELL_NUMBER - 1)
         self.pos = Vector2(self.x, self.y)
  
-class Main:
+class Game:
     def __init__(self):
         self.snake = Snake()
         self.food = Food()
 
+        self.score = 0
         # Is snake eat food?
         self.sneck = False
     
@@ -81,6 +84,7 @@ class Main:
 
     def collision_with_food(self):
         if self.food.pos == self.snake.body[0]:
+            self.score += 1
             self.food.update_position()
             self.sneck = True
         else:
@@ -94,7 +98,16 @@ class Main:
     def draw_elements(self):
         self.food.draw()
         self.snake.draw()
+        self.show_score()
     
+    def show_score(self):
+        score_text = str(self.score)
+        score_surface = GAME_FONT.render(score_text, True, (56, 74, 12))
+        score_x = int(CELL_NUMBER * CELL_SIZE - 60)
+        score_y = int(CELL_NUMBER * CELL_SIZE - 40)
+        score_rect = score_surface.get_rect(center=(score_x, score_y))
+        SCREEN.blit(score_surface, score_rect)
+
     def game_over(self):
         pygame.quit()
         sys.exit()
@@ -105,25 +118,26 @@ class Main:
         self.draw_elements()
 
 
-main_game = Main()
+game = Game()
 
 while GAME_LOOP:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            GAME_LOOP = False
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_RIGHT or event.key == ord('d')) and main_game.snake.direction.x != -1:
-                main_game.snake.direction = RIGTH
+            if (event.key == pygame.K_RIGHT or event.key == ord('d')) and game.snake.direction.x != -1:
+                game.snake.direction = RIGTH
                 break
-            if (event.key == pygame.K_LEFT or event.key == ord('a')) and main_game.snake.direction.x != 1:
-                main_game.snake.direction = LEFT
+            if (event.key == pygame.K_LEFT or event.key == ord('a')) and game.snake.direction.x != 1:
+                game.snake.direction = LEFT
                 break
-            if (event.key == pygame.K_UP or event.key == ord('w')) and main_game.snake.direction.y != 1:
-                main_game.snake.direction = UP
+            if (event.key == pygame.K_UP or event.key == ord('w')) and game.snake.direction.y != 1:
+                game.snake.direction = UP
                 break
-            if (event.key == pygame.K_DOWN or event.key == ord('s')) and main_game.snake.direction.y != -1:
-                main_game.snake.direction = DOWN
+            if (event.key == pygame.K_DOWN or event.key == ord('s')) and game.snake.direction.y != -1:
+                game.snake.direction = DOWN
                 break
             if event.key == pygame.K_ESCAPE:
                 GAME_LOOP = False
@@ -131,6 +145,6 @@ while GAME_LOOP:
 
     # Draw
     SCREEN.fill((175, 215, 70))
-    main_game.update()
+    game.update()
     pygame.display.update()
     CLOCK.tick(FPS)
