@@ -117,7 +117,14 @@ class Game:
         score_x = int(CELL_NUMBER * CELL_SIZE - 60)
         score_y = int(CELL_NUMBER * CELL_SIZE - 40)
         score_rect = score_surface.get_rect(center=(score_x, score_y))
+        apple_rect = self.food.apple.get_rect(midright=(score_rect.left, score_rect.centery))
+        bg_rect = pygame.Rect(apple_rect.left, apple_rect.top, 
+                            apple_rect.width + score_rect.width + 10, apple_rect.height)
+
+        pygame.draw.rect(SCREEN, (167, 209, 51), bg_rect)
         SCREEN.blit(score_surface, score_rect)
+        SCREEN.blit(self.food.apple, apple_rect)
+        pygame.draw.rect(SCREEN, (56, 74, 12), bg_rect, 2)
 
     def game_over(self):
         pygame.quit()
