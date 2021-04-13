@@ -5,3 +5,4 @@ include/
 lib/
 *.cfg
 __pycache__/
+env/
