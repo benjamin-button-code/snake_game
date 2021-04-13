@@ -10,7 +10,7 @@ pygame.init()
 # Settings / Constatns
 CELL_SIZE = 40
 CELL_NUMBER = 18
-WIDTH = CELL_NUMBER * CELL_SIZE + 10
+WIDTH = CELL_NUMBER * CELL_SIZE
 HEIGHT = WIDTH
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -31,17 +31,17 @@ class Snake:
         self.body = [Vector2(7, 9), Vector2(6, 9), Vector2(5, 9)]
         self.direction = RIGTH
 
+    def movement(self, sneck=False):
+        self.body.insert(0, self.body[0] + self.direction)
+        if not sneck:
+            self.body.pop()
+        
     def draw(self):
         for block in self.body:
             x_pos = int(block.x * CELL_SIZE)
             y_pos = int(block.y * CELL_SIZE)
             block_rect = pygame.Rect(x_pos, y_pos, CELL_SIZE - 2, CELL_SIZE - 2)
             pygame.draw.rect(SCREEN, (0, 255, 0), block_rect)
-
-    def movement(self):
-        self.body.pop()
-        self.body.insert(0, self.body[0] + self.direction)
-        
 
 
 class Food:
@@ -55,13 +55,56 @@ class Food:
         y_pos = int(self.pos.y * CELL_SIZE)
         food_rect = pygame.Rect(x_pos, y_pos, CELL_SIZE - 5, CELL_SIZE - 5)
         pygame.draw.rect(SCREEN, pygame.Color('red'), food_rect)
-
+    
+    def update_position(self):
+        self.x = random.randint(0, CELL_NUMBER - 1)
+        self.y = random.randint(0, CELL_NUMBER - 1)
+        self.pos = Vector2(self.x, self.y)
+ 
 class Main:
-    pass
+    def __init__(self):
+        self.snake = Snake()
+        self.food = Food()
+
+        # Is snake eat food?
+        self.sneck = False
+    
+    def collision_with_wall(self):
+        if not 0 <= self.snake.body[0].x < CELL_NUMBER \
+            or not 0 <= self.snake.body[0].y < CELL_NUMBER:
+            self.game_over()
+        
+    def collision_with_himself(self):
+        for block in self.snake.body[1:]:
+            if block == self.snake.body[0]:
+                self.game_over()
+
+    def collision_with_food(self):
+        if self.food.pos == self.snake.body[0]:
+            self.food.update_position()
+            self.sneck = True
+        else:
+            self.sneck = False
+    
+    def check_collision(self):
+        self.collision_with_food()
+        self.collision_with_wall()
+        self.collision_with_himself()
+
+    def draw_elements(self):
+        self.food.draw()
+        self.snake.draw()
+    
+    def game_over(self):
+        pygame.quit()
+        sys.exit()
+    
+    def update(self):
+        self.snake.movement(self.sneck)
+        self.check_collision()
+        self.draw_elements()
 
 
-snake = Snake()
-food = Food()
 main_game = Main()
 
 while GAME_LOOP:
@@ -70,25 +113,24 @@ while GAME_LOOP:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_RIGHT or event.key == ord('d')) and snake.direction.x != -1:
-                snake.direction = RIGTH
+            if (event.key == pygame.K_RIGHT or event.key == ord('d')) and main_game.snake.direction.x != -1:
+                main_game.snake.direction = RIGTH
                 break
-            if (event.key == pygame.K_LEFT or event.key == ord('a')) and snake.direction.x != 1:
-                snake.direction = LEFT
+            if (event.key == pygame.K_LEFT or event.key == ord('a')) and main_game.snake.direction.x != 1:
+                main_game.snake.direction = LEFT
                 break
-            if (event.key == pygame.K_UP or event.key == ord('w')) and snake.direction.y != 1:
-                snake.direction = UP
+            if (event.key == pygame.K_UP or event.key == ord('w')) and main_game.snake.direction.y != 1:
+                main_game.snake.direction = UP
                 break
-            if (event.key == pygame.K_DOWN or event.key == ord('s')) and snake.direction.y != -1:
-                snake.direction = DOWN
+            if (event.key == pygame.K_DOWN or event.key == ord('s')) and main_game.snake.direction.y != -1:
+                main_game.snake.direction = DOWN
                 break
             if event.key == pygame.K_ESCAPE:
                 GAME_LOOP = False
-    snake.movement()
-    
+
+
     # Draw
     SCREEN.fill((175, 215, 70))
-    food.draw()
-    snake.draw()
+    main_game.update()
     pygame.display.update()
     CLOCK.tick(FPS)
