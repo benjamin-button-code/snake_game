@@ -116,7 +116,6 @@ class Snake:
                         SCREEN.blit(snake_body_lt, block_rect)
 
 
-
 class Food:
     def __init__(self):
         self.apple = pygame.image.load("Images/apple.png").convert_alpha()
@@ -208,9 +207,28 @@ class Game:
         SCREEN.blit(self.food.apple, apple_rect)
         pygame.draw.rect(SCREEN, (56, 74, 12), bg_rect, 2)
 
+    def reset(self):
+        self.snake = Snake()
+        self.food = Food()
+        self.score = 0
+        self.sneck = False
+
     def game_over(self):
-        pygame.quit()
-        sys.exit()
+        done = True
+        while done:
+            for event in pygame.event.get():
+                if event.type==pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.reset()
+                        done = False
+                    elif event.type == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                        done = False
+        return
     
     def update(self):
         self.snake.movement(self.sneck)
@@ -245,7 +263,7 @@ while GAME_LOOP:
 
     # Speedup
     if game.score % 5 == 0 and game.score != 0 and SPEEDUP:
-        FPS += 1
+        FPS += 2
         SPEEDUP = False
     elif game.score % 5 != 0:
         SPEEDUP = True
